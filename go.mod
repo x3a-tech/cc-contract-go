@@ -1,4 +1,4 @@
-module github.com/x3a-tech/x3a-contract-go
+module github.com/x3a-tech/cc-contract-go
 
 go 1.24.1
 
