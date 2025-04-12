@@ -19,24 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CC_GetCoins_FullMethodName          = "/cc.CC/GetCoins"
-	CC_GetCoin_FullMethodName           = "/cc.CC/GetCoin"
-	CC_GetValuesPerDay_FullMethodName   = "/cc.CC/GetValuesPerDay"
-	CC_GetValuesPerWeek_FullMethodName  = "/cc.CC/GetValuesPerWeek"
-	CC_GetValuesPerMonth_FullMethodName = "/cc.CC/GetValuesPerMonth"
+	CC_GetCoins_FullMethodName      = "/cc.CC/GetCoins"
+	CC_GetCoinValues_FullMethodName = "/cc.CC/GetCoinValues"
 )
 
 // CCClient is the client API for CC service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CCClient interface {
-	// Получение монет(ы)
+	// Получение монет
 	GetCoins(ctx context.Context, in *GetCoinsParams, opts ...grpc.CallOption) (*GetCoinsResponse, error)
-	GetCoin(ctx context.Context, in *GetCoinParams, opts ...grpc.CallOption) (*GetCoinResponse, error)
 	// Получение текущих значений монеты
-	GetValuesPerDay(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error)
-	GetValuesPerWeek(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error)
-	GetValuesPerMonth(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error)
+	GetCoinValues(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error)
 }
 
 type cCClient struct {
@@ -57,40 +51,10 @@ func (c *cCClient) GetCoins(ctx context.Context, in *GetCoinsParams, opts ...grp
 	return out, nil
 }
 
-func (c *cCClient) GetCoin(ctx context.Context, in *GetCoinParams, opts ...grpc.CallOption) (*GetCoinResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCoinResponse)
-	err := c.cc.Invoke(ctx, CC_GetCoin_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *cCClient) GetValuesPerDay(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error) {
+func (c *cCClient) GetCoinValues(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetValuesResponse)
-	err := c.cc.Invoke(ctx, CC_GetValuesPerDay_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *cCClient) GetValuesPerWeek(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetValuesResponse)
-	err := c.cc.Invoke(ctx, CC_GetValuesPerWeek_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *cCClient) GetValuesPerMonth(ctx context.Context, in *GetValuesParams, opts ...grpc.CallOption) (*GetValuesResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetValuesResponse)
-	err := c.cc.Invoke(ctx, CC_GetValuesPerMonth_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, CC_GetCoinValues_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,13 +65,10 @@ func (c *cCClient) GetValuesPerMonth(ctx context.Context, in *GetValuesParams, o
 // All implementations must embed UnimplementedCCServer
 // for forward compatibility.
 type CCServer interface {
-	// Получение монет(ы)
+	// Получение монет
 	GetCoins(context.Context, *GetCoinsParams) (*GetCoinsResponse, error)
-	GetCoin(context.Context, *GetCoinParams) (*GetCoinResponse, error)
 	// Получение текущих значений монеты
-	GetValuesPerDay(context.Context, *GetValuesParams) (*GetValuesResponse, error)
-	GetValuesPerWeek(context.Context, *GetValuesParams) (*GetValuesResponse, error)
-	GetValuesPerMonth(context.Context, *GetValuesParams) (*GetValuesResponse, error)
+	GetCoinValues(context.Context, *GetValuesParams) (*GetValuesResponse, error)
 	mustEmbedUnimplementedCCServer()
 }
 
@@ -121,17 +82,8 @@ type UnimplementedCCServer struct{}
 func (UnimplementedCCServer) GetCoins(context.Context, *GetCoinsParams) (*GetCoinsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCoins not implemented")
 }
-func (UnimplementedCCServer) GetCoin(context.Context, *GetCoinParams) (*GetCoinResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCoin not implemented")
-}
-func (UnimplementedCCServer) GetValuesPerDay(context.Context, *GetValuesParams) (*GetValuesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetValuesPerDay not implemented")
-}
-func (UnimplementedCCServer) GetValuesPerWeek(context.Context, *GetValuesParams) (*GetValuesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetValuesPerWeek not implemented")
-}
-func (UnimplementedCCServer) GetValuesPerMonth(context.Context, *GetValuesParams) (*GetValuesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetValuesPerMonth not implemented")
+func (UnimplementedCCServer) GetCoinValues(context.Context, *GetValuesParams) (*GetValuesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCoinValues not implemented")
 }
 func (UnimplementedCCServer) mustEmbedUnimplementedCCServer() {}
 func (UnimplementedCCServer) testEmbeddedByValue()            {}
@@ -172,74 +124,20 @@ func _CC_GetCoins_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CC_GetCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCoinParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CCServer).GetCoin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CC_GetCoin_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CCServer).GetCoin(ctx, req.(*GetCoinParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CC_GetValuesPerDay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CC_GetCoinValues_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetValuesParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CCServer).GetValuesPerDay(ctx, in)
+		return srv.(CCServer).GetCoinValues(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CC_GetValuesPerDay_FullMethodName,
+		FullMethod: CC_GetCoinValues_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CCServer).GetValuesPerDay(ctx, req.(*GetValuesParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CC_GetValuesPerWeek_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetValuesParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CCServer).GetValuesPerWeek(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CC_GetValuesPerWeek_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CCServer).GetValuesPerWeek(ctx, req.(*GetValuesParams))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CC_GetValuesPerMonth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetValuesParams)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CCServer).GetValuesPerMonth(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: CC_GetValuesPerMonth_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CCServer).GetValuesPerMonth(ctx, req.(*GetValuesParams))
+		return srv.(CCServer).GetCoinValues(ctx, req.(*GetValuesParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -256,20 +154,8 @@ var CC_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CC_GetCoins_Handler,
 		},
 		{
-			MethodName: "GetCoin",
-			Handler:    _CC_GetCoin_Handler,
-		},
-		{
-			MethodName: "GetValuesPerDay",
-			Handler:    _CC_GetValuesPerDay_Handler,
-		},
-		{
-			MethodName: "GetValuesPerWeek",
-			Handler:    _CC_GetValuesPerWeek_Handler,
-		},
-		{
-			MethodName: "GetValuesPerMonth",
-			Handler:    _CC_GetValuesPerMonth_Handler,
+			MethodName: "GetCoinValues",
+			Handler:    _CC_GetCoinValues_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
